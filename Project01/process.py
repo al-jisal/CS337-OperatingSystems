@@ -12,6 +12,10 @@ class Process:
         self.wait_time = 0
         self.turnaround_time = 0
     
+    def get_ID(self):
+        """returns the ID of a process"""
+        return self.id
+    
     def get_burst_time(self):
         """returns the burst time of a process"""
         return self.burst_time
