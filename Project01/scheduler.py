@@ -8,6 +8,7 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
                    verbose=True):
     """non-preemptive FCFS scheduler"""
     process = find_lowest_arrival(ready)
+    process.wait_time = time - process.arrival_time
     start_time = time
 
     while process.burst_time > 0:
@@ -15,6 +16,7 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
         time += 1
         add_ready(processes, ready, time)
 
+    process.turnaround_time = time - process.arrival_time
     ready.remove(process)
     end_time = time
     CPU.append( dict(process=process.get_ID(),
@@ -22,6 +24,7 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
                      Finish=end_time,
                      Priority=process.get_priority()))
     return time
+
 
 def find_lowest_arrival(ready):
     """returns the process with the lowest arrival time in the ready queue"""
