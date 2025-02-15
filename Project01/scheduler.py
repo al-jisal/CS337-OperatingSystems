@@ -17,7 +17,6 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
         add_ready(processes, ready, time)
 
     process.turnaround_time = time - process.arrival_time
-    ready.remove(process)
     end_time = time
     CPU.append( dict(process=process.get_ID(),
                      Start=start_time,
