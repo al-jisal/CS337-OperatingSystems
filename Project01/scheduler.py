@@ -9,12 +9,13 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
     """non-preemptive FCFS scheduler"""
     process = find_lowest_arrival(ready)
     start_time = time
-    
+
     while process.burst_time > 0:
         process.burst_time -= 1
         time += 1
         add_ready(processes, ready, time)
 
+    ready.remove(process)
     end_time = time
     CPU.append( dict(process=process.get_ID(),
                      Start=start_time,
