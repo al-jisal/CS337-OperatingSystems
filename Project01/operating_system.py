@@ -27,5 +27,17 @@ def kernel(selected_scheduler, verbose=True):
     while ready:
         time = scheduler.FCFS_scheduler(processes, ready, CPU, time)
 
-    
+    wait_times, turnaround_times = [], []
+    for item in processes:
+        wait_times.append(item.wait_time)
+        turnaround_times.append(item.turnaround_time)
+
+    df = pd.DataFrame(CPU)
+    df["wait time"] = wait_times
+    df["turnaround time"] = turnaround_times
+    df.to_csv("results.csv", index=False)
+
+    average_wait_time = df["wait time"].mean(axis=0)
+    average_turnaround_time = df["turnaround time"].mean(axis=0)
+    return average_wait_time, average_turnaround_time
 
