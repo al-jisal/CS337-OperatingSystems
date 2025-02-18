@@ -25,7 +25,7 @@ def kernel(selected_scheduler, verbose=True):
     scheduler.add_ready(processes, ready, time)
 
     while ready:
-        time = scheduler.FCFS_scheduler(processes, ready, CPU, time)
+        time = selected_scheduler(processes, ready, CPU, time)
 
     wait_times, turnaround_times = [], []
     for item in processes:
