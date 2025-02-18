@@ -35,8 +35,9 @@ def SJF_scheduler(processes,
     """non-preemptive Shortest Job First(SJF) scheduler"""
     heap = [(item.get_burst_time(), item) for item in ready]
     heapq.heapify(heap)
-    process = heap.heappop()
+    process = heapq.heappop(heap)[1]
     process.set_wait_time(time - process.get_arrival_time())
+    ready.remove(process)
     start_time = time
     
     while process.get_burst_time() > 0:
@@ -59,11 +60,11 @@ def Priority_scheduler(processes,
                        time,
                        verbose=True):
     """non-preemptive Priority scheduler"""
-    # keep a ready heap of tupples (process, priority)
-    heap = [(item.get_priority(), item) for item in ready]
+    heap = [(-item.get_priority(), item) for item in ready]
     heapq.heapify(heap)
-    process = heap.heappop()
+    process = heapq.heappop(heap)[1]
     process.set_wait_time(time - process.get_arrival_time())
+    ready.remove(process)
     start_time = time
     
     while process.get_burst_time() > 0:
