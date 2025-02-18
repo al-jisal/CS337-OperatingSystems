@@ -1,6 +1,8 @@
 """
 The scheduler contains programs for scheduling processes on the CPU
 """
+import heapq
+
 def FCFS_scheduler(processes, # list of all the processes in the simulation, whether arrived or not
                    ready, # list of processes with current arrival time
                    CPU, # list that holds beginnig and end runtimes for each process
@@ -8,7 +10,7 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
                    verbose=True):
     """non-preemptive First Come First Serve(FCFS) scheduler"""
     process = find_lowest_arrival(ready)
-    process.wait_time = time - process.arrival_time
+    process.set_wait_time(time - process.get_arrival_time())
     start_time = time
 
     while process.burst_time > 0:
@@ -16,7 +18,7 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
         time += 1
         add_ready(processes, ready, time)
 
-    process.turnaround_time = time - process.arrival_time
+    process.set_turnaround_time(time - process.get_arrival_time())
     end_time = time
     CPU.append( dict(process=process.get_ID(),
                      Start=start_time,
@@ -26,13 +28,29 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
 
 
 def SJF_scheduler(processes,
+                  ready,
                   CPU,
                   time,
                   verbose=True):
     """non-preemptive Shortest Job First(SJF) scheduler"""
-    # keep a ready heap of tupples (process, burst_time)
-    # pick process with lowest arrival to run 
-    # set start time to time
+    heap = [(item.get_burst_time(), item) for item in ready]
+    heapq.heapify(heap)
+    process = heap.heappop()
+    process.set_wait_time(time - process.get_arrival_time())
+    start_time = time
+    
+    while process.get_burst_time() > 0:
+        process.set_burst_time(process.get_burst_time() - 1)
+        time += 1
+        add_ready(processes, ready, time)
+
+    process.set_turnaround_time(time - process.get_arrival_time())
+    end_time = time
+    CPU.append( dict(process=process.get_ID(),
+                     Start=start_time,
+                     Finish=end_time,
+                     Priority=process.get_priority()))
+    return time
 
 
 def Priority_scheduler(processes,
