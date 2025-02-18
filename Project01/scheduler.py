@@ -6,7 +6,7 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
                    CPU, # list that holds beginnig and end runtimes for each process
                    time, # an integer representing the current time
                    verbose=True):
-    """non-preemptive FCFS scheduler"""
+    """non-preemptive First Come First Serve(FCFS) scheduler"""
     process = find_lowest_arrival(ready)
     process.wait_time = time - process.arrival_time
     start_time = time
@@ -23,6 +23,24 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
                      Finish=end_time,
                      Priority=process.get_priority()))
     return time
+
+
+def SJF_scheduler(processes,
+                  CPU,
+                  time,
+                  verbose=True):
+    """non-preemptive Shortest Job First(SJF) scheduler"""
+    # keep a ready heap of tupples (process, burst_time)
+    # pick process with lowest arrival to run 
+    # set start time to time
+
+
+def Priority_scheduler(processes,
+                       CPU,
+                       time,
+                       verbose=True):
+    """non-preemptive Priority scheduler"""
+    # keep a ready heap of tupples (process, priority)
 
 
 def find_lowest_arrival(ready):
