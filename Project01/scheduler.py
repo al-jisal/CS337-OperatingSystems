@@ -13,7 +13,7 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
     process.set_wait_time(time - process.get_arrival_time())
     start_time = time
 
-    while process.burst_time > 0:
+    while process.get_burst_time() > 0:
         process.burst_time -= 1
         time += 1
         add_ready(processes, ready, time)
@@ -55,10 +55,29 @@ def SJF_scheduler(processes,
 
 def Priority_scheduler(processes,
                        CPU,
+                       ready,
                        time,
                        verbose=True):
     """non-preemptive Priority scheduler"""
     # keep a ready heap of tupples (process, priority)
+    heap = [(item.get_priority(), item) for item in ready]
+    heapq.heapify(heap)
+    process = heap.heappop()
+    process.set_wait_time(time - process.get_arrival_time())
+    start_time = time
+    
+    while process.get_burst_time() > 0:
+        process.set_burst_time(process.get_burst_time() - 1)
+        time += 1
+        add_ready(processes, ready, time)
+
+    process.set_turnaround_time(time - process.get_arrival_time())
+    end_time = time
+    CPU.append( dict(process=process.get_ID(),
+                     Start=start_time,
+                     Finish=end_time,
+                     Priority=process.get_priority()))
+    return time
 
 
 def find_lowest_arrival(ready):
