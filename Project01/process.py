@@ -12,6 +12,9 @@ class Process:
         self.wait_time = 0
         self.turnaround_time = 0
     
+    def __lt__(self, other):
+        return self.burst_time < other.burst_time
+
     def get_ID(self):
         """returns the ID of a process"""
         return self.id
