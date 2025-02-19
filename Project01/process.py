@@ -3,21 +3,18 @@ This file is a structure that holds process information
 """
 class Process:
     """A process object"""
-    def __init__(self, id, burst_time, arrival_time, priority, p=False):
+    def __init__(self, id, burst_time, arrival_time, priority):
         """Constructor for Process class"""
-        self.p = p
         self.id = id
         self.burst_time = burst_time
         self.arrival_time = arrival_time
         self.priority = priority
         self.wait_time = 0
         self.turnaround_time = 0
-    
-    def __lt__(self, other):
-        if self.p:
-            return self.priority < other.priority
-        return self.burst_time < other.burst_time
 
+    def __repr__(self):
+        return f"Process(id:{self.id})"
+    
     def get_ID(self):
         """returns the ID of a process"""
         return self.id
