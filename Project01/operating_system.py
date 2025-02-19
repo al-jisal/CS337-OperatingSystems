@@ -7,7 +7,7 @@ In this file,
 import pandas as pd
 import scheduler
 
-def kernel(selected_scheduler, processes, verbose=True):
+def kernel(selected_scheduler, processes, filename, verbose=True):
     """Simulates CPU scheduling aspect of an operating system kernel"""
     CPU, ready, time = [],[], 0
 
@@ -24,7 +24,7 @@ def kernel(selected_scheduler, processes, verbose=True):
     df = pd.DataFrame(CPU)
     df["wait time"] = wait_times
     df["turnaround time"] = turnaround_times
-    df.to_csv("results.csv", index=False)
+    df.to_csv(filename, index=False)
 
     average_wait_time = df["wait time"].mean(axis=0)
     average_turnaround_time = df["turnaround time"].mean(axis=0)
