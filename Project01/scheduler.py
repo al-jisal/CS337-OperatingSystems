@@ -12,9 +12,10 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
     process = find_lowest_arrival(ready)
     process.set_wait_time(time - process.get_arrival_time())
     start_time = time
+    burst_time = process.get_burst_time()
 
-    while process.get_burst_time() > 0:
-        process.burst_time -= 1
+    while burst_time > 0:
+        burst_time -= 1
         time += 1
         add_ready(processes, ready, time)
 
@@ -35,13 +36,14 @@ def SJF_scheduler(processes,
     """non-preemptive Shortest Job First(SJF) scheduler"""
     heap = [(item.get_burst_time(), item.get_ID(), item) for item in ready]
     heapq.heapify(heap)
-    process = heapq.heappop(heap)[1]
+    _, _, process = heapq.heappop(heap)
     process.set_wait_time(time - process.get_arrival_time())
     ready.remove(process)
     start_time = time
+    burst_time = process.get_burst_time()
     
-    while process.get_burst_time() > 0:
-        process.set_burst_time(process.get_burst_time() - 1)
+    while burst_time > 0:
+        burst_time -= 1
         time += 1
         add_ready(processes, ready, time)
 
@@ -62,13 +64,14 @@ def Priority_scheduler(processes,
     """non-preemptive Priority scheduler"""
     heap = [(-item.get_priority(), item.get_ID(), item) for item in ready]
     heapq.heapify(heap)
-    process = heapq.heappop(heap)[1]
+    _, _, process = heapq.heappop(heap)
     process.set_wait_time(time - process.get_arrival_time())
     ready.remove(process)
     start_time = time
+    burst_time = process.get_burst_time()
     
-    while process.get_burst_time() > 0:
-        process.set_burst_time(process.get_burst_time() - 1)
+    while burst_time > 0:
+        burst_time -= 1
         time += 1
         add_ready(processes, ready, time)
 
