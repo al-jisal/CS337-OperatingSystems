@@ -55,8 +55,8 @@ def SJF_scheduler(processes,
 
 
 def Priority_scheduler(processes,
-                       CPU,
                        ready,
+                       CPU,
                        time,
                        verbose=True):
     """non-preemptive Priority scheduler"""
