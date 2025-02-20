@@ -11,6 +11,9 @@ class Process:
         self.priority = priority
         self.wait_time = 0
         self.turnaround_time = 0
+
+    def __repr__(self):
+        return f"Process(id:{self.id})"
     
     def get_ID(self):
         """returns the ID of a process"""
