@@ -1,0 +1,5 @@
+process,Start,Finish,Priority,wait time,turnaround time
+0,0,5,30,0,5
+1,5,9,35,3,7
+2,9,10,36,4,5
+3,10,16,20,4,10

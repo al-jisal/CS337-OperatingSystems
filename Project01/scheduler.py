@@ -104,3 +104,43 @@ def add_ready(processes, ready, time):
     for process in processes:
         if process.get_arrival_time() == time:
             ready.append(process)
+
+
+# ----------------------------- Extension ---------------------------------
+
+def Priority_scheduler_with_aging(processes,
+                       ready,
+                       CPU,
+                       time,
+                       age,
+                       verbose=True):
+    """non-preemptive Priority scheduler"""
+    heap = [(-item.get_priority(), item.get_ID(), item) for item in ready]
+    heapq.heapify(heap)
+    _, _, process = heapq.heappop(heap)
+    process.set_wait_time(time - process.get_arrival_time())
+    ready.remove(process)
+    start_time = time
+    burst_time = process.get_burst_time()
+    
+    while burst_time > 0:
+        burst_time -= 1
+        time += 1
+        grow(ready, age)
+        add_ready(processes, ready, time)
+        
+
+    process.set_turnaround_time(time - process.get_arrival_time())
+    end_time = time
+    CPU.append( dict(process=process.get_ID(),
+                     Start=start_time,
+                     Finish=end_time,
+                     Priority=process.get_priority()))
+    return time
+
+def grow(ready, age):
+    if len(ready) == 0:
+        return None
+
+    for process in ready:
+        process.set_priority(process.get_priority() + age)
