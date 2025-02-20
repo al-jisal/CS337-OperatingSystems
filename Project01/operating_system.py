@@ -10,11 +10,17 @@ import scheduler
 def kernel(selected_scheduler, processes, filename, verbose=True):
     """Simulates CPU scheduling aspect of an operating system kernel"""
     CPU, ready, time = [],[], 0
+    completed = 0
 
     scheduler.add_ready(processes, ready, time)
 
-    while ready:
-        time = selected_scheduler(processes, ready, CPU, time)
+    while completed < len(processes):
+        if ready:
+            time = selected_scheduler(processes, ready, CPU, time)
+            completed += 1
+        else:
+            time += 1
+            scheduler.add_ready(processes, ready, time)
 
     wait_times, turnaround_times = [], []
     for item in processes:
