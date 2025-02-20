@@ -60,7 +60,7 @@ def Priority_scheduler(processes,
                        time,
                        verbose=True):
     """non-preemptive Priority scheduler"""
-    heap = [(item.get_priority(), item) for item in ready]
+    heap = [-(item.get_priority(), item) for item in ready]
     heapq.heapify(heap)
     process = heapq.heappop(heap)[1]
     process.set_wait_time(time - process.get_arrival_time())
