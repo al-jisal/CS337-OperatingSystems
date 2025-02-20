@@ -1,4 +1,9 @@
 """
+Name: Desmond Frimpong
+Course: CS337
+Project: 1
+Date: 02/19/2025
+File: process.py
 This file is a structure that holds process information
 """
 class Process:

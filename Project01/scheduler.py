@@ -1,4 +1,9 @@
 """
+Name: Desmond Frimpong
+Course: CS337
+Project: 1
+Date: 02/19/2025
+File: scheduler.py
 The scheduler contains programs for scheduling processes on the CPU
 """
 import heapq
