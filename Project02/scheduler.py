@@ -16,6 +16,7 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
                    verbose=True):
     """non-preemptive First Come First Serve(FCFS) scheduler"""
     process = find_lowest_arrival(ready)
+    response(process, time)
     process.set_wait_time(time - process.get_arrival_time())
     start_time = time
     duty = process.get_duty()
@@ -47,6 +48,7 @@ def SJF_scheduler(processes,
     heap = [(item.get_duty()[0], item.get_ID(), item) for item in ready]
     heapq.heapify(heap)
     _, _, process = heapq.heappop(heap)
+    response(process, time)
     process.set_wait_time(time - process.get_arrival_time())
     ready.remove(process)
     start_time = time
@@ -79,6 +81,7 @@ def Priority_scheduler(processes,
     heap = [(-item.get_priority(), item.get_ID(), item) for item in ready]
     heapq.heapify(heap)
     _, _, process = heapq.heappop(heap)
+    response(process, time)
     process.set_wait_time(time - process.get_arrival_time())
     ready.remove(process)
     start_time = time
@@ -123,3 +126,8 @@ def add_ready(processes, ready, time):
     for process in processes:
         if process.get_arrival_time() == time:
             ready.append(process)
+
+def response(process, time):
+    """sets the response time for a process"""
+    if process.get_wait_time() == 0:
+        process.set_response_time(time - process.get_arrival_time())
