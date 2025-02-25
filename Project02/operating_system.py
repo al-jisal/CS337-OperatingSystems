@@ -35,12 +35,11 @@ def kernel(selected_scheduler, processes, filename, quantum=None, verbose=True):
         turnaround_times.append(item.get_turnaround_time())
 
     df = pd.DataFrame(CPU)
-    df["response time"] = response_times
-    df["wait time"] = wait_times
-    df["turnaround time"] = turnaround_times
+    dp = pd.DataFrame()
+    dp["processes"] = processes
+    dp["response time"] = response_times
+    dp["wait time"] = wait_times
+    dp["turnaround time"] = turnaround_times
     df.to_csv(filename, index=False)
 
-    average_response_time = df["response time"].mean(axis=0)
-    average_wait_time = df["wait time"].mean(axis=0)
-    average_turnaround_time = df["turnaround time"].mean(axis=0)
-    return average_response_time, average_wait_time, average_turnaround_time
+    return dp
