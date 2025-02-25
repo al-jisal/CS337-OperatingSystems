@@ -16,6 +16,7 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
                    verbose=True):
     """non-preemptive First Come First Serve(FCFS) scheduler"""
     process = find_lowest_arrival(ready)
+    response(process, time)
     process.set_wait_time(time - process.get_arrival_time())
     start_time = time
     duty = process.get_duty()
@@ -47,6 +48,7 @@ def SJF_scheduler(processes,
     heap = [(item.get_duty()[0], item.get_ID(), item) for item in ready]
     heapq.heapify(heap)
     _, _, process = heapq.heappop(heap)
+    response(process, time)
     process.set_wait_time(time - process.get_arrival_time())
     ready.remove(process)
     start_time = time
@@ -79,6 +81,7 @@ def Priority_scheduler(processes,
     heap = [(-item.get_priority(), item.get_ID(), item) for item in ready]
     heapq.heapify(heap)
     _, _, process = heapq.heappop(heap)
+    response(process, time)
     process.set_wait_time(time - process.get_arrival_time())
     ready.remove(process)
     start_time = time
@@ -100,6 +103,40 @@ def Priority_scheduler(processes,
                      Priority=process.get_priority()))
     return time
 
+
+def RR_scheduler(processes,
+                 ready,
+                 CPU,
+                 time,
+                 quantum,
+                 verbose=True):
+    """a preemptive on quantum First Come First Serve (Round Robin) scheduler"""
+    process = find_lowest_arrival(ready)
+    response(process, time)
+    process.set_wait_time(process.get_wait_time() + (time - process.get_arrival_time()))
+    process.set_status("running")
+    start_time = time
+
+    while quantum > 0 and process.get_duty()[0] > 0:
+        quantum -= 1
+        time += 1
+        duty = process.get_duty()
+        duty[0] -= 1
+        process.set_duty(duty)
+        add_ready(processes, ready, time)
+
+    if process.get_duty()[0] > 0:
+        process.set_arrival_time(time)
+        process.set_status("waiting")
+        ready.append(process)
+    else:
+        process.set_turnaround_time(process.get_wait_time() + (time - process.get_arrival_time()))
+    CPU.append( dict(process=process.get_ID(),
+                    Start=start_time,
+                    Finish=time,
+                    Priority=process.get_priority()))
+
+    return time
 
 # ----------------------------- Helper Functions ------------------------------------------------------
 
@@ -123,3 +160,8 @@ def add_ready(processes, ready, time):
     for process in processes:
         if process.get_arrival_time() == time:
             ready.append(process)
+
+def response(process, time):
+    """sets the response time for a process"""
+    if process.get_wait_time() == 0:
+        process.set_response_time(time - process.get_arrival_time())
