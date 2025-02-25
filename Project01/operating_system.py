@@ -1,4 +1,10 @@
 """
+Name: Desmond Frimpong
+Course: CS337
+Project: 1
+Date: 02/19/2025
+File: operating_system.py
+
 In this file,
     - processes are created 
     - scheduler runs
