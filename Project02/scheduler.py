@@ -17,7 +17,7 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
     process = find_lowest_arrival(ready)
     process.set_wait_time(time - process.get_arrival_time())
     start_time = time
-    burst_time = process.get_burst_time()
+    burst_time = process.get_duty()[0]
 
     while burst_time > 0:
         burst_time -= 1
@@ -39,13 +39,13 @@ def SJF_scheduler(processes,
                   time,
                   verbose=True):
     """non-preemptive Shortest Job First(SJF) scheduler"""
-    heap = [(item.get_burst_time(), item.get_ID(), item) for item in ready]
+    heap = [(item.get_duty()[0], item.get_ID(), item) for item in ready]
     heapq.heapify(heap)
     _, _, process = heapq.heappop(heap)
     process.set_wait_time(time - process.get_arrival_time())
     ready.remove(process)
     start_time = time
-    burst_time = process.get_burst_time()
+    burst_time = process.get_duty()[0]
     
     while burst_time > 0:
         burst_time -= 1
@@ -73,7 +73,7 @@ def Priority_scheduler(processes,
     process.set_wait_time(time - process.get_arrival_time())
     ready.remove(process)
     start_time = time
-    burst_time = process.get_burst_time()
+    burst_time = process.get_duty()[0]
     
     while burst_time > 0:
         burst_time -= 1
@@ -88,6 +88,8 @@ def Priority_scheduler(processes,
                      Priority=process.get_priority()))
     return time
 
+
+# ----------------------------- Helper Functions ------------------------------------------------------
 
 def find_lowest_arrival(ready):
     """returns the process with the lowest arrival time in the ready queue"""
