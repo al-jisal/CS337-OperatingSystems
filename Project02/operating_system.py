@@ -23,7 +23,7 @@ def kernel(selected_scheduler, processes, filename, quantum=None, verbose=True):
     while completed < len(processes):
         if ready:
             time = selected_scheduler(processes, ready, CPU, time, quantum)
-            completed += 1
+            completed = sum([item.get_duty()[0] == 0 for item in processes])
         else:
             time += 1
             scheduler.add_ready(processes, ready, time)
