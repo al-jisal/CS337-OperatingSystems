@@ -12,18 +12,22 @@ def FCFS_scheduler(processes, # list of all the processes in the simulation, whe
                    ready, # list of processes with current arrival time
                    CPU, # list that holds beginnig and end runtimes for each process
                    time, # an integer representing the current time
+                   quantum=None, # max time slices that each process get to run
                    verbose=True):
     """non-preemptive First Come First Serve(FCFS) scheduler"""
     process = find_lowest_arrival(ready)
     process.set_wait_time(time - process.get_arrival_time())
     start_time = time
-    burst_time = process.get_duty()[0]
+    duty = process.get_duty()
+    burst_time = duty[0]
 
     while burst_time > 0:
         burst_time -= 1
         time += 1
         add_ready(processes, ready, time)
 
+    duty[0] = 0
+    process.set_duty(duty)
     process.set_turnaround_time(time - process.get_arrival_time())
     end_time = time
     CPU.append( dict(process=process.get_ID(),
@@ -37,6 +41,7 @@ def SJF_scheduler(processes,
                   ready,
                   CPU,
                   time,
+                  quantum=None,
                   verbose=True):
     """non-preemptive Shortest Job First(SJF) scheduler"""
     heap = [(item.get_duty()[0], item.get_ID(), item) for item in ready]
@@ -45,13 +50,16 @@ def SJF_scheduler(processes,
     process.set_wait_time(time - process.get_arrival_time())
     ready.remove(process)
     start_time = time
-    burst_time = process.get_duty()[0]
+    duty = process.get_duty()
+    burst_time = duty[0]
     
     while burst_time > 0:
         burst_time -= 1
         time += 1
         add_ready(processes, ready, time)
 
+    duty[0] = 0
+    process.set_duty(duty)
     process.set_turnaround_time(time - process.get_arrival_time())
     end_time = time
     CPU.append( dict(process=process.get_ID(),
@@ -65,6 +73,7 @@ def Priority_scheduler(processes,
                        ready,
                        CPU,
                        time,
+                       quantum=None,
                        verbose=True):
     """non-preemptive Priority scheduler"""
     heap = [(-item.get_priority(), item.get_ID(), item) for item in ready]
@@ -73,13 +82,16 @@ def Priority_scheduler(processes,
     process.set_wait_time(time - process.get_arrival_time())
     ready.remove(process)
     start_time = time
-    burst_time = process.get_duty()[0]
+    duty = process.get_duty()
+    burst_time = duty[0]
     
     while burst_time > 0:
         burst_time -= 1
         time += 1
         add_ready(processes, ready, time)
 
+    duty[0] = 0
+    process.set_duty(duty)
     process.set_turnaround_time(time - process.get_arrival_time())
     end_time = time
     CPU.append( dict(process=process.get_ID(),
