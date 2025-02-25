@@ -135,8 +135,53 @@ def RR_scheduler(processes,
                     Start=start_time,
                     Finish=time,
                     Priority=process.get_priority()))
-
     return time
+
+
+def SRT_scheduler(processes,
+                  ready,
+                  CPU,
+                  time,
+                  quantum=None,
+                  verbose=True):
+    """a preemptive on arrival Shortest Job First (Shortest Remaining Time) scheduler"""
+    heap = [(item.get_duty()[0], item.get_ID(), item) for item in ready]
+    heapq.heapify(heap)
+    _, _, process = heapq.heappop(heap)
+    ready.remove(process)
+    response(process, time)
+    process.set_wait_time(process.get_wait_time() + (time - process.get_arrival_time()))
+    process.set_status("running")
+    start_time = time
+    queue_length = len(ready)
+
+    while (
+            ((len(heap) > 0 and process.get_duty()[0] < heap[0][2].get_duty()[0])
+             or process.get_duty()[0]> 0
+            )
+            and process.get_duty()[0]> 0 ):
+        time += 1
+        duty = process.get_duty()
+        duty[0] -= 1
+        process.set_duty(duty)
+        add_ready(processes, ready, time)
+        if len(ready) > queue_length:
+            heap = [(item.get_duty()[0], item.get_ID(), item) for item in ready]
+            heapq.heapify(heap)
+            queue_length = len(ready)
+
+    if process.get_duty()[0] > 0:
+        process.set_arrival_time(time)
+        process.set_status("waiting")
+        ready.append(process)
+    else:
+        process.set_turnaround_time(process.get_wait_time() + (time - process.get_arrival_time()))
+    CPU.append( dict(process=process.get_ID(),
+                    Start=start_time,
+                    Finish=time,
+                    Priority=process.get_priority()))
+    return time
+
 
 # ----------------------------- Helper Functions ------------------------------------------------------
 
