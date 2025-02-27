@@ -130,7 +130,7 @@ def RR_scheduler(processes,
         process.set_status("waiting")
         ready.append(process)
     else:
-        process.set_turnaround_time(process.get_wait_time() + (time - process.get_arrival_time()))
+        process.set_turnaround_time(process.get_wait_time() + (time - process.get_wait_time()))
     CPU.append( dict(process=process.get_ID(),
                     Start=start_time,
                     Finish=time,
@@ -175,7 +175,7 @@ def SRT_scheduler(processes,
         process.set_status("waiting")
         ready.append(process)
     else:
-        process.set_turnaround_time(process.get_wait_time() + (time - process.get_arrival_time()))
+        process.set_turnaround_time(process.get_wait_time() + (time - process.get_wait_time()))
     CPU.append( dict(process=process.get_ID(),
                     Start=start_time,
                     Finish=time,
@@ -200,9 +200,7 @@ def PP_scheduler(processes,
     start_time = time
     queue_length = len(ready)
 
-    while (process.get_duty()[0] > 0 and 
-           (len(heap) == 0 or process.get_priority() > heap[0][2].get_priority())
-        ):
+    while process.get_duty()[0] > 0 and (not heap or process.get_priority() >= heap[0][2].get_priority()):
         time += 1
         duty = process.get_duty()
         duty[0] -= 1
@@ -218,7 +216,7 @@ def PP_scheduler(processes,
         process.set_status("waiting")
         ready.append(process)
     else:
-        process.set_turnaround_time(process.get_wait_time() + (time - process.get_arrival_time()))
+        process.set_turnaround_time(process.get_wait_time() + (time - process.get_wait_time()))
     CPU.append( dict(process=process.get_ID(),
                     Start=start_time,
                     Finish=time,
@@ -300,7 +298,7 @@ def add_ready(processes, ready, time):
 
 def response(process, time):
     """sets the response time for a process"""
-    if process.get_wait_time() == 0:
+    if process.get_response_time() == None:
         process.set_response_time(time - process.get_arrival_time())
 
 def update_waiting_queue(first_queue,
@@ -370,7 +368,7 @@ def RR_for_MLQ(process,
             process.status = "waiting"
             waiting_queue.append(process)
         else:
-            process.set_turnaround_time(process.get_wait_time() + (time - process.get_arrival_time()))
+            process.set_turnaround_time(process.get_wait_time() + (time - process.get_wait_time()))
 
     CPU.append( dict(process=process.get_ID(),
                     Start=start_time,
