@@ -226,6 +226,55 @@ def PP_scheduler(processes,
     return time
 
 
+def MFQ_scheduler(processes,
+                  first_queue,
+                  second_queue,
+                  third_queue,
+                  waiting_queue,
+                  CPU,
+                  time,
+                  levels,
+                  verbose=True):
+    """Multilevel Feedback Queue algorithm"""
+    if first_queue:
+        process = find_lowest_arrival(first_queue)
+        time = RR_for_MLQ(process,
+                          processes,
+                          first_queue,
+                          second_queue,
+                          third_queue,
+                          waiting_queue,
+                          CPU,
+                          time,
+                          levels[0])
+    elif second_queue:
+        process = find_lowest_arrival(second_queue)
+        time = RR_for_MLQ(process,
+                          processes,
+                          first_queue,
+                          second_queue,
+                          third_queue,
+                          waiting_queue,
+                          CPU,
+                          time,
+                          levels[1])
+    elif third_queue:
+        process = find_lowest_arrival(third_queue)
+        time = RR_for_MLQ(process,
+                          processes,
+                          first_queue,
+                          second_queue,
+                          third_queue,
+                          waiting_queue,
+                          CPU,
+                          time,
+                          levels[2])
+    else:
+        update_waiting_queue(first_queue,second_queue,third_queue, waiting_queue)
+        
+    return time
+
+
 # ----------------------------- Helper Functions ------------------------------------------------------
 
 def find_lowest_arrival(ready):
@@ -253,3 +302,80 @@ def response(process, time):
     """sets the response time for a process"""
     if process.get_wait_time() == 0:
         process.set_response_time(time - process.get_arrival_time())
+
+def update_waiting_queue(first_queue,
+                         second_queue,
+                         third_queue,
+                         waiting_queue):                        
+    """updates the wait queue"""
+    holder = waiting_queue.copy()
+    if waiting_queue:
+        for process in holder:
+            duty = process.get_duty()
+            duty[0] -= 1
+            if duty[0] <= 0:
+                duty.pop(0)
+                process.set_status("running")
+                process.set_duty(duty)
+                if process.get_queue() == 0:
+                    first_queue.append(process)
+                elif process.get_queue() == 1:
+                    second_queue.append(process)
+                else:
+                    third_queue.append(process)
+                waiting_queue.remove(process)
+            process.set_duty(duty)
+    print(f"Before update: {len(waiting_queue)} waiting, {len(first_queue)} ready")
+
+def RR_for_MLQ(process,
+               processes,
+               first_queue,
+               second_queue,
+               third_queue,
+               waiting_queue,
+               CPU,
+               time,
+               level):
+    """customized Round Robin for MLQ"""
+    response(process, time)
+    process.set_wait_time(process.get_wait_time() + (time - process.get_arrival_time()))
+    start_time = time
+    
+    print("just before the while loop")
+    while level > 0 and process.get_duty()[0] > 0:
+        level -= 1
+        time += 1
+        duty = process.get_duty()
+        duty[0] -= 1
+        process.set_duty(duty)
+        add_ready(processes, first_queue, time)
+        update_waiting_queue(first_queue,
+                             second_queue,
+                             third_queue,
+                             waiting_queue)
+
+    # quantum wasn't enough for process, so demote to lower queue
+    if level == 0  and process.get_duty()[0] > 0:
+        process.set_queue(process.get_queue() + 1)
+        process.set_arrival_time(time)
+        if process.get_queue()== 1:
+            second_queue.append(process)
+        else:
+            third_queue.append(process)
+        print(f"Process {process.get_ID()} moving to queue {process.get_queue()}")
+
+    else: # process gave up cpu before quantum, so send it to waiting
+        duty = process.get_duty()
+        duty.pop(0)
+        process.set_duty(duty)
+        if len(duty) > 0:
+            process.status = "waiting"
+            waiting_queue.append(process)
+        else:
+            process.set_turnaround_time(process.get_wait_time() + (time - process.get_arrival_time()))
+
+    CPU.append( dict(process=process.get_ID(),
+                    Start=start_time,
+                    Finish=time,
+                    Priority=process.get_priority()))
+    return time
