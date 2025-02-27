@@ -271,7 +271,7 @@ def MFQ_scheduler(processes,
                           levels[2])
     else:
         update_waiting_queue(first_queue,second_queue,third_queue, waiting_queue)
-        
+
     return time
 
 
@@ -325,7 +325,7 @@ def update_waiting_queue(first_queue,
                     third_queue.append(process)
                 waiting_queue.remove(process)
             process.set_duty(duty)
-    print(f"Before update: {len(waiting_queue)} waiting, {len(first_queue)} ready")
+
 
 def RR_for_MLQ(process,
                processes,
@@ -341,7 +341,6 @@ def RR_for_MLQ(process,
     process.set_wait_time(process.get_wait_time() + (time - process.get_arrival_time()))
     start_time = time
     
-    print("just before the while loop")
     while level > 0 and process.get_duty()[0] > 0:
         level -= 1
         time += 1
@@ -362,7 +361,6 @@ def RR_for_MLQ(process,
             second_queue.append(process)
         else:
             third_queue.append(process)
-        print(f"Process {process.get_ID()} moving to queue {process.get_queue()}")
 
     else: # process gave up cpu before quantum, so send it to waiting
         duty = process.get_duty()

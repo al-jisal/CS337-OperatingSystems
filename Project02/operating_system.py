@@ -23,7 +23,6 @@ def kernel(selected_scheduler, processes, filename, quantum=None, levels=None, v
         scheduler.add_ready(processes, first_queue, time)
 
         while completed < len(processes):
-            print("now in the kernel")
             if first_queue or second_queue or third_queue or waiting_queue:
                 time = selected_scheduler(processes,
                                           first_queue,
@@ -34,7 +33,6 @@ def kernel(selected_scheduler, processes, filename, quantum=None, levels=None, v
                                           time,
                                           levels)
                 completed = sum([len(item.get_duty()) == 0 for item in processes])
-                print(f"Completed: {completed}/{len(processes)}")
             else:
                 time += 1
                 scheduler.add_ready(processes, first_queue, time)
