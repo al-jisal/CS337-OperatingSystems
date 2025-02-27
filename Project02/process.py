@@ -16,7 +16,7 @@ class Process:
         self.priority = priority
         self.wait_time = 0
         self.turnaround_time = 0
-        self.response_time = 0
+        self.response_time = None
         self.status = "running"
         self.queue = 0
 
