@@ -16,7 +16,7 @@ class Process:
         self.priority = priority
         self.wait_time = 0
         self.turnaround_time = 0
-        self.response_time = 0
+        self.response_time = None
         self.status = "running"
         self.queue = 0
 
@@ -32,6 +32,7 @@ class Process:
         returns the queue number that a process resides
         in a multilevel feedback queue
         """
+        return self.queue
 
     def set_queue(self, queue):
         """sets the queue number of a process"""
