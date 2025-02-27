@@ -1,21 +1,24 @@
 """
 Name: Desmond Frimpong
 Course: CS337
-Project: 1
-Date: 02/19/2025
+Project: 2
+Date: 02/26/2025
 File: process.py
 This file is a structure that holds process information
 """
 class Process:
     """A process object"""
-    def __init__(self, id, burst_time, arrival_time, priority):
+    def __init__(self, id, duty, arrival_time, priority):
         """Constructor for Process class"""
         self.id = id
-        self.burst_time = burst_time
+        self.duty = duty
         self.arrival_time = arrival_time
         self.priority = priority
         self.wait_time = 0
         self.turnaround_time = 0
+        self.response_time = None
+        self.status = "running"
+        self.queue = 0
 
     def __repr__(self):
         return f"Process(id:{self.id})"
@@ -24,13 +27,40 @@ class Process:
         """returns the ID of a process"""
         return self.id
     
-    def get_burst_time(self):
-        """returns the burst time of a process"""
-        return self.burst_time
+    def get_queue(self):
+        """
+        returns the queue number that a process resides
+        in a multilevel feedback queue
+        """
+        return self.queue
+
+    def set_queue(self, queue):
+        """sets the queue number of a process"""
+        self.queue = queue
+
+    def get_status(self):
+        """returns the status of a process"""
+        return self.status
     
-    def set_burst_time(self, burst_time):
+    def set_status(self, status):
+        """sets the status of a process"""
+        self.status = status
+
+    def get_response_time(self):
+        """returns the response time of a process"""
+        return self.response_time
+
+    def set_response_time(self, response_time):
+        """sets the response time of a process"""
+        self.response_time = response_time
+
+    def get_duty(self):
+        """returns the burst time of a process"""
+        return self.duty
+    
+    def set_duty(self, duty):
         """sets the burst time of a process"""
-        self.burst_time = burst_time
+        self.duty = duty
 
     def get_arrival_time(self):
         """returns the arrival time of a process"""
