@@ -13,20 +13,43 @@ In this file,
 import pandas as pd
 import scheduler
 
-def kernel(selected_scheduler, processes, filename, quantum=None, verbose=True):
+def kernel(selected_scheduler, processes, filename, quantum=None, levels=None, verbose=True):
     """Simulates CPU scheduling aspect of an operating system kernel"""
-    CPU, ready, time = [],[], 0
+    CPU, time = [], 0
     completed = 0
 
-    scheduler.add_ready(processes, ready, time)
+    if selected_scheduler == scheduler.MFQ_scheduler:
+        first_queue, second_queue, third_queue, waiting_queue = [], [], [], []
+        scheduler.add_ready(processes, first_queue, time)
 
-    while completed < len(processes):
-        if ready:
-            time = selected_scheduler(processes, ready, CPU, time, quantum)
-            completed = sum([item.get_duty()[0] == 0 for item in processes])
-        else:
-            time += 1
-            scheduler.add_ready(processes, ready, time)
+        while completed < len(processes):
+            print("now in the kernel")
+            if first_queue or second_queue or third_queue or waiting_queue:
+                time = selected_scheduler(processes,
+                                          first_queue,
+                                          second_queue,
+                                          third_queue,
+                                          waiting_queue,
+                                          CPU,
+                                          time,
+                                          levels)
+                completed = sum([len(item.get_duty()) == 0 for item in processes])
+                print(f"Completed: {completed}/{len(processes)}")
+            else:
+                time += 1
+                scheduler.add_ready(processes, first_queue, time)
+    else:
+        ready = []
+
+        scheduler.add_ready(processes, ready, time)
+
+        while completed < len(processes):
+            if ready:
+                time = selected_scheduler(processes, ready, CPU, time, quantum)
+                completed = sum([item.get_duty()[0] == 0 for item in processes])
+            else:
+                time += 1
+                scheduler.add_ready(processes, ready, time)
 
     response_times, wait_times, turnaround_times = [], [], []
     for item in processes:
