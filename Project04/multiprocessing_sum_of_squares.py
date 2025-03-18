@@ -38,7 +38,7 @@ def main():
     for name, process in processes.items():
         print(f'Is {process.pid} still running: {process.is_alive()}')
     print()
-    
+
     end_time = time.time()
     print("Parallel Execution Time:", end_time - start_time)
 
