@@ -1,6 +1,6 @@
 
 import threading
-import solution_one
+from solution_one import SolutionOne
 
 
 class Counter:
@@ -18,26 +18,27 @@ class Counter:
 counter = Counter()
 
 
-def worker():
+def worker_1(lock, id):
     for _ in range(1000):
         counter.increment()
 
 
-def worker():
+def worker_2(lock, id):
     for _ in range(1000):
         counter.increment()
 
 
 def main():
-    threads = [threading.Thread(target=worker) for _ in range(10)]
+    lock = SolutionOne()
+    t1 = threading.Thread(target=worker_1, args=(lock, 1, ))
+    t2 = threading.Thread(target=worker_2, args=(lock, 2, ))
 
 
-    for t in threads:
-        t.start()
+    t1.start()
+    t2.start()
 
-
-    for t in threads:
-        t.join()
+    t1.join()
+    t2.join()
 
 
     print("Final counter value:", counter.value)
