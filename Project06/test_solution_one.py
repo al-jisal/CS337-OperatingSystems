@@ -19,13 +19,21 @@ counter = Counter()
 
 
 def worker_1(lock, id):
-    for _ in range(1000):
+    for _ in range(700): # to test for progress, I reduced the range from 1000 to 700
+        lock.lock(id)
+        print(f"thread {id} in critical section")
         counter.increment()
+        print(counter.value)
+        lock.unlock(id)
 
 
 def worker_2(lock, id):
     for _ in range(1000):
+        lock.lock(id)
+        print(f"thread {id} in critical section")
         counter.increment()
+        print(counter.value)
+        lock.unlock(id)
 
 
 def main():
