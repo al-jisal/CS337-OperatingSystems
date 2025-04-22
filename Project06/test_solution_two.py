@@ -20,21 +20,27 @@ counter = Counter()
 
 
 def worker_1(lock, id):
-    for _ in range(600):  # reduced this iteration from 1000 to 600 to simulate progress
+    for _ in range(1000): 
+        time.sleep(0.001)  #this ensures concurrency among the two workers
         lock.lock(id)
         print(f"thread {id} in critical section")
+        print(lock.flag)
         counter.increment()
         print(counter.value)
+        time.sleep(0.001)  #this ensures concurrency among the two workers
+
         lock.unlock(id)
 
 
 def worker_2(lock, id):
     for _ in range(1000):
-        time.sleep(0.1)  #this ensures concurrency among the two workers
+        time.sleep(0.001)  #this ensures concurrency among the two workers
         lock.lock(id)
         print(f"thread {id} in critical section")
         counter.increment()
         print(counter.value)
+        time.sleep(0.001)  #this ensures concurrency among the two workers
+
         lock.unlock(id)
 
 
